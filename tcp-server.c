@@ -78,7 +78,7 @@ int main()
     // loop through all the results and bind to the first we can
     for (iter = servinfo; iter != NULL; iter = iter->ai_next)
     {
-        if ((sockfd = socket(iter->ai_family, iter->ai_socktype, iter->ai_protocol)) != 0)
+        if ((sockfd = socket(iter->ai_family, iter->ai_socktype, iter->ai_protocol)) == -1)
         {
             perror("server: socket");
             continue;
@@ -86,15 +86,16 @@ int main()
 
         // set socket option SO_REUSEADDR to 1 which allows to bind to a hanging socket
         // if there is no atcive connection
-        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) != 0)
+        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
         {
             perror("Not able to set socket option");
             continue;
         }
 
-        if (bind(sockfd, iter->ai_addr, iter->ai_addrlen) != 0)
+        if (bind(sockfd, iter->ai_addr, iter->ai_addrlen) ==-1)
         {
-            perror("Not able to bind to this address");
+            close(sockfd);
+            perror("server: bind");
             continue;
         }
 
