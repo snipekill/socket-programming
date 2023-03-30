@@ -92,7 +92,7 @@ int main()
             continue;
         }
 
-        if (bind(sockfd, iter->ai_addr, iter->ai_addrlen) ==-1)
+        if (bind(sockfd, iter->ai_addr, iter->ai_addrlen) == -1)
         {
             close(sockfd);
             perror("server: bind");
@@ -140,7 +140,7 @@ int main()
     while (1)
     {
         addr_size = sizeof(client_addr);
-        if ((new_fd = accept(sockfd, (struct sockaddr *)&client_addr, &addr_size)) != 0)
+        if ((new_fd = accept(sockfd, (struct sockaddr *)&client_addr, &addr_size)) == -1)
         {
             perror("Cannot accept this connection");
             continue;
@@ -158,8 +158,11 @@ int main()
             close(sockfd);
             if(send(new_fd, "Hello World", 12, 0) == -1) {
                 perror("Not able to send hello");
-                exit(0);
+                close(new_fd);
+                exit(1);
             }
+            close(new_fd);
+            exit(0);
         }
         else if(child > 0){
             close(new_fd);
