@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
 
     printf("IP addresses for %s:\n\n", argv[1]);
 
-    for(p = res; p!= NULL; p = res->ai_next){
+    for(p = res; p!= NULL; p = p->ai_next){
         void *addr;
         char *ipver;
         if(p->ai_family == AF_INET){
